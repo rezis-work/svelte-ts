@@ -1,16 +1,7 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-
-	let {
-		name,
-		children,
-		secondChildren
-	}: { name: string; children: Snippet; secondChildren: Snippet } = $props();
+	let { name }: { name: string } = $props();
 </script>
 
 <div>
-	<h1>{name ? `${name}` : ''}</h1>
-	{@render children()}
-
-	<h3>{@render secondChildren(name)}</h3>
+	<h1>{name ? name : 'User'}'s form</h1>
 </div>
