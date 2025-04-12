@@ -9,59 +9,33 @@
 	});
 </script>
 
-<Header name={formState.name} />
+<Header name={formState.name}>
+	<p>multi step form</p>
+	{#snippet secondChildren(name: string)}
+		<p>second children {name}</p>
+	{/snippet}
+</Header>
 
 <main>
 	<p>Step: {formState.step + 1}</p>
 
-	{#if formState.step === 0}
-		<div>
-			<label for="name">Enter your Name</label>
-			<input type="text" id="name" bind:value={formState.name} />
-			{#if formState.errors}
-				<p class="error">{formState.errors}</p>
-			{/if}
-		</div>
-		<button
-			onclick={() => {
-				if (formState.name !== '') {
-					formState.step++;
-					formState.errors = '';
-				} else {
-					formState.errors = 'Name is required';
-				}
-			}}>Next</button
-		>
-	{:else if formState.step === 1}
-		<div>
-			<label for="bday">Enter your Birthday</label>
-			<input type="date" id="bday" bind:value={formState.birthday} />
-			{#if formState.errors}
-				<p class="error">{formState.errors}</p>
-			{/if}
-		</div>
-		<button
-			onclick={() => {
-				if (formState.birthday !== '') {
-					formState.step++;
-					formState.errors = '';
-				} else {
-					formState.errors = 'Birthday is required';
-				}
-			}}>Next</button
-		>
-	{:else}
-		<p>Thank you</p>
-	{/if}
+	{@render formStep({ question: 'Whats your name', id: 'name', type: 'text' })}
+
+	{#if formState.step === 0}{/if}
 </main>
 
+{#snippet formStep({ question, id, type }: { question: string; id: string; type: string })}
+	<article>
+		<div>
+			<label for={id}>{question}</label>
+			<input {type} {id} bind:value={formState[id as keyof typeof formState]} />
+		</div>
+	</article>
+{/snippet}
+
 <style>
-	.error {
+	/* .error {
 		color: red;
 		font-size: 12px;
-	}
-
-	:global(div) {
-		background-color: #f0f0f0;
-	}
+	} */
 </style>
