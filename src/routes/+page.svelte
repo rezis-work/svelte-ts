@@ -1,25 +1,67 @@
 <script lang="ts">
 	import Header from './Header.svelte';
 
-	let name = $state('rezi');
-	let status: 'OPEN' | 'CLOSED' = $state('OPEN');
-	let full_name = $derived(`${name} karanadze`);
-
-	function onclick() {
-		status = status === 'OPEN' ? 'CLOSED' : 'OPEN';
-	}
-
-	$effect(() => {
-		console.log('status changed', status);
+	let formState = $state({
+		name: '',
+		birthday: '',
+		step: 0,
+		errors: ''
 	});
 </script>
 
-<Header {name} fake_name="Rezi" />
+<Header name={formState.name} />
 
-<input type="text" bind:value={name} />
+<main>
+	<p>Step: {formState.step + 1}</p>
 
-<h2>{full_name}</h2>
+	{#if formState.step === 0}
+		<div>
+			<label for="name">Enter your Name</label>
+			<input type="text" id="name" bind:value={formState.name} />
+			{#if formState.errors}
+				<p class="error">{formState.errors}</p>
+			{/if}
+		</div>
+		<button
+			onclick={() => {
+				if (formState.name !== '') {
+					formState.step++;
+					formState.errors = '';
+				} else {
+					formState.errors = 'Name is required';
+				}
+			}}>Next</button
+		>
+	{:else if formState.step === 1}
+		<div>
+			<label for="bday">Enter your Birthday</label>
+			<input type="date" id="bday" bind:value={formState.birthday} />
+			{#if formState.errors}
+				<p class="error">{formState.errors}</p>
+			{/if}
+		</div>
+		<button
+			onclick={() => {
+				if (formState.birthday !== '') {
+					formState.step++;
+					formState.errors = '';
+				} else {
+					formState.errors = 'Birthday is required';
+				}
+			}}>Next</button
+		>
+	{:else}
+		<p>Thank you</p>
+	{/if}
+</main>
 
-<p>The store is now {status}</p>
+<style>
+	.error {
+		color: red;
+		font-size: 12px;
+	}
 
-<button {onclick}>toggle status</button>
+	:global(div) {
+		background-color: #f0f0f0;
+	}
+</style>
